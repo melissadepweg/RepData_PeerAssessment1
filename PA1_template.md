@@ -71,7 +71,7 @@ sumTable <- aggregate(activity$steps ~ activity$date, FUN=sum, )
 colnames(sumTable)<- c("Date", "Steps")
 ```
 
-2 Make a histogram of the total number of steps taken each day
+2.  Make a histogram of the total number of steps taken each day
 
 ```r
 ## Creating the historgram of total steps per day
