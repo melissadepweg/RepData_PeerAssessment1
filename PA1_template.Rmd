@@ -35,14 +35,14 @@ The dataset is stored in a comma-separated-value (CSV) file and there are a tota
 
   Loading and preprocessing the data
 ------------------------------------------------
-1. Loading the Data
+Loading the Data
 ```{r, eval=TRUE, echo=TRUE}
 library(ggplot2)
 library(plyr)
 activity <- read.csv("activity.csv")
 ```
 
-2. Processing the Data
+Processing the Data
 ```{r, eval=TRUE, echo=TRUE}
 activity$day <- weekdays(as.Date(activity$date))
 activity$DateTime<- as.POSIXct(activity$date, format="%Y-%m-%d")
@@ -53,20 +53,20 @@ clean <- activity[!is.na(activity$steps),]
 
   What is mean total number of steps taken per day?
 --------------
-1. Calculate the total number of steps taken per day
+Calculate the total number of steps taken per day
 ```{r, eval=TRUE, echo=TRUE}
 ## summarizing total steps per date
 sumTable <- aggregate(activity$steps ~ activity$date, FUN=sum, )
 colnames(sumTable)<- c("Date", "Steps")
 ```
 
-2.  Make a histogram of the total number of steps taken each day
+Make a histogram of the total number of steps taken each day
 ```{r, eval=TRUE, echo=TRUE}
 ## Creating the historgram of total steps per day
 hist(sumTable$Steps, breaks=5, xlab="Steps", main = "Total Steps per Day")
 ```
 
-3. Calculate and report the mean and median of the total number of steps taken per day
+Calculate and report the mean and median of the total number of steps taken per day
 ```{r, eval=TRUE, echo=TRUE}
 ## Mean of Steps
 as.integer(mean(sumTable$Steps))
@@ -81,7 +81,7 @@ The median number of steps taken each day was `r as.integer(median(sumTable$Step
 
   What is the average daily activity pattern?
 ----------
-1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 ```{r, eval=TRUE, echo=TRUE}
 library(plyr)
 library(ggplot2)
@@ -96,7 +96,7 @@ p <- ggplot(intervalTable, aes(x=interval, y=Avg), xlab = "Interval", ylab="Aver
 p + geom_line()+xlab("Interval")+ylab("Average Number of Steps")+ggtitle("Average Number of Steps per Interval")
 ```
 
-2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 ```{r, eval=TRUE, echo=TRUE}
 ##Maximum steps by interval
 maxSteps <- max(intervalTable$Avg)
@@ -109,7 +109,7 @@ The 5-minute interval which had the maximum number of steps was the `r intervalT
 
   Imputing missing values
 --------
-1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 ```{r, eval=TRUE, echo=TRUE}
 ##Number of NAs in original data set
 nrow(activity[is.na(activity$steps),])
@@ -117,7 +117,7 @@ nrow(activity[is.na(activity$steps),])
 
 The total number of rows with steps = 'NA' is `r nrow(activity[is.na(activity$steps),])`.
 
-2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
+Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
 My strategy for filling in NAs will be to substitute the missing steps with the average 5-minute interval *based on the day of the week.*
 
@@ -131,7 +131,7 @@ nadata<- activity[is.na(activity$steps),]
 newdata<-merge(nadata, avgTable, by=c("interval", "day"))
 ```
 
-3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
+Create a new dataset that is equal to the original dataset but with the missing data filled in.
 ```{r, eval=TRUE, echo=TRUE}
 ## Reorder the new substituded data in the same format as clean data set
 newdata2<- newdata[,c(6,4,1,2,5)]
@@ -141,7 +141,7 @@ colnames(newdata2)<- c("steps", "date", "interval", "day", "DateTime")
 mergeData <- rbind(clean, newdata2)
 ```
 
-4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
 ```{r, eval=TRUE, echo=TRUE}
 ##Create sum of steps per date to compare with step 1
@@ -168,13 +168,13 @@ However, the overall shape of the distribution has not changed.
 
   Are there differences in activity patterns between weekdays and weekends?
 ------
-1. Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
+Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
 ```{r, eval=TRUE, echo=TRUE}
 ## Create new category based on the days of the week
 mergeData$DayCategory <- ifelse(mergeData$day %in% c("Saturday", "Sunday"), "Weekend", "Weekday")
 ```
 
-2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
+Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 ```{r, eval=TRUE, echo=TRUE}
 library(lattice) 
 ## Summarize data by interval and type of day
